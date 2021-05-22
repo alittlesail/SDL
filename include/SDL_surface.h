@@ -324,7 +324,7 @@ extern DECLSPEC SDL_Surface *SDLCALL SDL_LoadBMP_RW(SDL_RWops * src,
  *
  * Convenience macro.
  */
-#define SDL_LoadBMP(file)   SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1)
+#define SDL_LoadBMP(file)   SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb", 0), 1)
 
 /**
  * Save a surface to a seekable SDL data stream in BMP format.
