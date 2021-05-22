@@ -756,7 +756,7 @@ mem_close(SDL_RWops * context)
 /* Functions to create SDL_RWops structures from various data sources */
 
 SDL_RWops *
-SDL_RWFromFile(const char *file, const char *mode)
+SDL_RWFromFile(const char *file, const char *mode, SDL_bool only_assets)
 {
     SDL_RWops *rwops = NULL;
     if (!file || !*file || !mode || !*mode) {
@@ -766,25 +766,27 @@ SDL_RWFromFile(const char *file, const char *mode)
 #if defined(__ANDROID__)
 #ifdef HAVE_STDIO_H
     /* Try to open the file on the filesystem first */
-    if (*file == '/') {
-        FILE *fp = fopen(file, mode);
-        if (fp) {
-            return SDL_RWFromFP(fp, 1);
-        }
-    } else {
-        /* Try opening it from internal storage if it's a relative path */
-        char *path;
-        FILE *fp;
-
-        /* !!! FIXME: why not just "char path[PATH_MAX];" ? */
-        path = SDL_stack_alloc(char, PATH_MAX);
-        if (path) {
-            SDL_snprintf(path, PATH_MAX, "%s/%s",
-                         SDL_AndroidGetInternalStoragePath(), file);
-            fp = fopen(path, mode);
-            SDL_stack_free(path);
+    if (!only_assets) {
+        if (*file == '/') {
+            FILE *fp = fopen(file, mode);
             if (fp) {
                 return SDL_RWFromFP(fp, 1);
+            }
+        } else {
+            /* Try opening it from internal storage if it's a relative path */
+            char *path;
+            FILE *fp;
+
+            /* !!! FIXME: why not just "char path[PATH_MAX];" ? */
+            path = SDL_stack_alloc(char, PATH_MAX);
+            if (path) {
+                SDL_snprintf(path, PATH_MAX, "%s/%s",
+                             SDL_AndroidGetInternalStoragePath(), file);
+                fp = fopen(path, mode);
+                SDL_stack_free(path);
+                if (fp) {
+                    return SDL_RWFromFP(fp, 1);
+                }
             }
         }
     }
@@ -1016,7 +1018,7 @@ done:
 void *
 SDL_LoadFile(const char *file, size_t *datasize)
 {
-   return SDL_LoadFile_RW(SDL_RWFromFile(file, "rb"), datasize, 1);
+   return SDL_LoadFile_RW(SDL_RWFromFile(file, "rb", 0), datasize, 1);
 }
 
 Sint64

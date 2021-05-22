@@ -1234,6 +1234,41 @@ extern DECLSPEC int SDLCALL SDL_RenderCopy(SDL_Renderer * renderer,
  * Copy a portion of the texture to the current rendering, with optional
  * rotation and flipping.
  *
+ *  \param renderer The renderer which should copy parts of a texture.
+ *  \param texture The source texture.
+ *  \param src   A pointer to the source quad, or NULL for the entire
+ *                   texture.
+ *  \param dst   A pointer to the destination quad, or NULL for the
+ *                   entire rendering target.
+ *
+ *  \return 0 on success, or -1 on error
+ */
+extern DECLSPEC int SDLCALL SDL_RenderQuad(SDL_Renderer * renderer,
+                                           SDL_Texture * texture,
+                                           const float * src,
+                                           const float * dst);
+
+/**
+ *  \brief Copy a portion of the texture to the current rendering target.
+ *
+ *  \param renderer The renderer which should copy parts of a texture.
+ *  \param texture The source texture.
+ *  \param src   A pointer to the source triangle, or NULL for the entire
+ *                   texture.
+ *  \param dst   A pointer to the destination triangle, or NULL for the
+ *                   entire rendering target.
+ *
+ *  \return 0 on success, or -1 on error
+ */
+extern DECLSPEC int SDLCALL SDL_RenderTriangle(SDL_Renderer * renderer,
+                                           SDL_Texture * texture,
+                                           const float * src,
+                                           const float * dst);
+
+/**
+ * Copy a portion of the texture to the current rendering, with optional
+ * rotation and flipping.
+ *
  * Copy a portion of the texture to the current rendering
  * target, optionally rotating it by angle around the given center and also
  * flipping it top-bottom and/or left-right.
